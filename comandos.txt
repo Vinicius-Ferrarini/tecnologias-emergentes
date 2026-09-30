@@ -1,0 +1,20 @@
+docker info
+
+# Container na porta 8081
+$pastaSite = (Resolve-Path .\site).Path
+docker run -d --name docker-b -p 127.0.0.1:8081:80 --mount "type=bind,source=$pastaSite,target=/usr/share/nginx/html,readonly" nginx:alpine
+docker ps --filter name=docker-b
+
+# Troca para a porta 8091
+docker stop docker-b
+docker rm docker-b
+$pastaSite = (Resolve-Path .\site).Path
+docker run -d --name docker-b -p 127.0.0.1:8091:80 --mount "type=bind,source=$pastaSite,target=/usr/share/nginx/html,readonly" nginx:alpine
+
+# Parar e conferir
+docker stop docker-b
+docker inspect --format '{{.State.Status}}' docker-b
+exited
+docker ps -a --filter name=docker-b
+CONTAINER ID   IMAGE          COMMAND                  CREATED         STATUS                              PORTS     NAMES
+38f8ae9a3e5a   nginx:alpine   "/docker-entrypoint.…"   7 minutes ago   Exited (0) Less than a second ago             docker-b
